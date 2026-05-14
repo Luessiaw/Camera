@@ -40,3 +40,13 @@ tcp.stream eq <stream_id>
 - During App preview, no direct camera-to-phone communication was observed.
 - Camera traffic was observed with the hotspot gateway and multiple external IP addresses.
 - Save full pcapng evidence in P0-06 before doing deeper DNS/TCP/UDP analysis.
+
+## P0-06 Saved Captures
+
+| Scenario | File | Packets | Notes |
+| --- | --- | ---: | --- |
+| Camera boot with internet access | `pcap_raw/20260514_2104_boot_online_camera_192.168.137.177.pcapng` | 288 | Power-on, cloud connection, and App preview window |
+| App preview video | `pcap_raw/20260514_app_preview_camera_192.168.137.177.pcapng` | 117 | App preview while camera was already online |
+| App PTZ control | `pcap_raw/20260514_app_ptz_camera_192.168.137.177.pcapng` | 79 | App control scenario |
+
+See `01_network_capture/capture_manifest.md` for file sizes, initial DNS observations, and conversation summary.

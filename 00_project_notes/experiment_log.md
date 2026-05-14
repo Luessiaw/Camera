@@ -179,3 +179,51 @@
 ### Next Step
 
 - Continue with P0-06: save pcapng captures for boot, App preview, and later PTZ/control scenarios.
+
+---
+
+## Experiment ID: EXP-0005
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P0-06 |
+| Goal | Save pcapng captures for boot, App preview, and App PTZ/control scenarios |
+| Device State | Camera online through Windows Mobile Hotspot |
+| Network State | Camera on 192.168.137.177, phone on 192.168.137.29, gateway on 192.168.137.1 |
+| Tools Used | tshark / Wireshark / Npcap |
+| Related Files | 01_network_capture/pcap_raw/*.pcapng / 01_network_capture/capture_manifest.md |
+
+### Steps
+
+1. Confirmed Wireshark/tshark capture interface `本地连接* 10`.
+2. Captured camera boot and online behavior for 120 seconds.
+3. Captured App preview behavior for 60 seconds.
+4. Captured App PTZ/control behavior for 60 seconds.
+5. Extracted initial IP conversation summaries and DNS observations from the saved pcapng files.
+6. Recorded the capture index in `01_network_capture/capture_manifest.md`.
+
+### Observations
+
+- Boot capture saved as `20260514_2104_boot_online_camera_192.168.137.177.pcapng`, 288 packets, 75416 bytes.
+- App preview capture saved as `20260514_app_preview_camera_192.168.137.177.pcapng`, 117 packets, 43360 bytes.
+- App PTZ/control capture saved as `20260514_app_ptz_camera_192.168.137.177.pcapng`, 79 packets, 31256 bytes.
+- DNS observations include `svc.av380.net`, `alivetype.av380.net`, `alarmserverlist.av380.net`, `devota.av380.net`, `logs.av380.net`, `ipc79.w390.net`, `regipc4379.av380.net`, and `push2.av380.net`.
+- No direct camera-to-phone traffic was identified in the high-level conversation summaries.
+
+### Results
+
+- P0-06 is complete for the initial online, App preview, and App PTZ/control scenarios.
+- Raw pcapng files are saved locally under `01_network_capture/pcap_raw/`.
+- Raw capture files are intentionally ignored by Git.
+- DNS and conversation evidence is sufficient to enter P1-01/P1-02/P1-03.
+
+### Problems
+
+- Blocked-internet capture is not included yet; it should be handled during P1-06 after baseline analysis.
+- PTZ command semantics are not decoded yet; this belongs to P1/P2 analysis.
+
+### Next Step
+
+- Continue with P1-01: analyze the saved boot pcap and extract the boot-stage network behavior.
