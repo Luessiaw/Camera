@@ -5,7 +5,7 @@
 ## Experiment ID: EXP-0001
 
 | Item | Value |
-|---|---|
+| --- | --- |
 | Date | 2026-05-14 |
 | Operator | Luessiaw |
 | Stage | P0-04 |
