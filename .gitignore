@@ -1,0 +1,101 @@
+# OS and editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# VS Code local machine state
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Office temporary lock files
+~$*
+*.tmp
+*.temp
+
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Network capture artifacts
+*.pcap
+*.pcapng
+*.cap
+*.har
+01_network_capture/pcap_raw/
+01_network_capture/pcap_filtered/
+
+# Scan and test outputs
+02_network_scan/nmap/
+02_network_scan/arp/
+03_video_stream_test/ffmpeg_logs/
+03_video_stream_test/screenshots/
+
+# UART logs may contain device-specific secrets
+04_uart_logs/raw_logs/
+04_uart_logs/cleaned_logs/
+*.log
+
+# Firmware dumps, extracted filesystems, and repacked images
+05_firmware_backup/flash_dump_raw/
+05_firmware_backup/flash_dump_verified/
+05_firmware_backup/hash_records/
+06_firmware_analysis/binwalk_output/
+06_firmware_analysis/extracted_rootfs/
+06_firmware_analysis/strings_output/
+07_modified_firmware/repack_output/
+07_modified_firmware/test_versions/
+*.bin
+*.dump
+*.img
+*.rom
+*.fw
+*.squashfs
+*.jffs2
+*.ubi
+*.ubifs
+
+# Media and screenshots captured during testing
+*.mp4
+*.mkv
+*.avi
+*.mov
+*.ts
+*.h264
+*.h265
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.webp
+
+# Local service/runtime state
+*.pid
+*.db
+*.sqlite
+*.sqlite3
+08_server_deployment/**/.env
+08_server_deployment/**/data/
+08_server_deployment/**/recordings/
+08_server_deployment/**/clips/
+10_long_term_operation/uptime_logs/
+
+# Archives and large transfer files
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+
+# Archive area is local scratch by default
+99_archive/
