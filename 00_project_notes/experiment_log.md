@@ -490,3 +490,61 @@
 ### Updated Next Step
 
 - Continue with P1-06: block public internet and observe offline/local behavior.
+
+---
+
+## Experiment ID: EXP-0011
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P1-06 |
+| Goal | Block public internet and observe offline/local behavior |
+| Device State | Camera connected to Windows Mobile Hotspot |
+| Network State | Hotspot LAN stayed active; upstream internet was interrupted and later restored |
+| Tools Used | tshark / Wireshark / Windows Mobile Hotspot / phone App |
+| Related Files | 01_network_capture/pcap_raw/20260514_blocked_internet_camera_192.168.137.177.pcapng / 01_network_capture/blocked_internet_analysis.md |
+
+### Steps
+
+1. Started a camera-filtered capture on the Windows Mobile Hotspot interface.
+2. Kept the camera online during the initial baseline window.
+3. Interrupted the PC upstream internet path while keeping the hotspot active.
+4. Attempted App interaction during the blocked-internet window.
+5. Restored the PC upstream internet path.
+6. Extracted conversation, DNS, TCP 8800, relay/media, and recovery evidence from the saved pcapng.
+7. Added the manually observed App behavior timeline.
+
+### Observations
+
+- Capture saved as `20260514_blocked_internet_camera_192.168.137.177.pcapng`.
+- Capture duration: 178.127818300 seconds.
+- Packet count: 3865.
+- File size: 1666268 bytes.
+- During the blocked window, DNS lookups for `devota.av380.net`, `ipc79.w390.net`, `ntp.sjtu.edu.cn`, `ntp.av380.net`, and `p2pdispa.av380.net` returned `No such name`.
+- Local hotspot/gateway traffic continued during the blocked window.
+- A local camera-to-phone packet appeared at 63.148773800s: `192.168.137.177:8800 -> 192.168.137.29:43104`, TCP payload length 90 bytes, followed by a retransmission.
+- The camera continued attempting cloud IPC and relay connections while upstream connectivity was failing.
+- After recovery, large TCP 32100 flows appeared with `121.14.11.152` and `47.104.64.146`.
+- `devota.av380.net` and `ipc79.w390.net` resolved successfully again after recovery.
+- Manual observation timeline: preview was open at 0s; upstream Ethernet was disconnected around 40s; pressing a direction button around 50s moved the motor but the video image did not update; exiting and re-entering preview around 60s showed unable to connect; upstream Ethernet was restored around 120s and preview worked normally again.
+
+### Results
+
+- P1-06 packet capture and initial analysis are complete.
+- The camera does not appear to become a fully standalone LAN device when public internet is blocked.
+- The local TCP 8800 path is now confirmed in two P1 scenarios, but its exact semantics are not decoded yet.
+- Existing-session PTZ/control can appear to work briefly after upstream internet is disconnected.
+- Fresh preview setup and video update appear to depend on cloud/upstream connectivity.
+- Recovery behavior strongly depends on cloud IPC/relay endpoints.
+
+### Problems
+
+- Manual App observation times are approximate rather than synchronized to packet timestamps.
+- Camera-filtered capture cannot fully observe phone-to-cloud traffic.
+- The TCP 8800 payload is not decoded.
+
+### Next Step
+
+- Continue with local service discovery and TCP 8800-focused checks in the next phase.

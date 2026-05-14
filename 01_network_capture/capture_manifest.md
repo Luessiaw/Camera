@@ -39,6 +39,7 @@ These files are intentionally ignored by Git because they may contain local netw
 | App preview video, structured repeat | `20260514_app_preview_structured_camera_192.168.137.177.pcapng` | 90s | 133 | 54148 bytes | Repeated preview capture for P1-04 validation |
 | App PTZ control | `20260514_app_ptz_camera_192.168.137.177.pcapng` | 60s | 79 | 31256 bytes | Captured App control scenario; detailed command path still needs P1/P2 analysis |
 | App PTZ control, structured repeat | `20260514_app_ptz_structured_camera_192.168.137.177.pcapng` | 120s | 122 | 56704 bytes | Structured PTZ capture for P1-05; manual action annotation pending |
+| Blocked internet / restore | `20260514_blocked_internet_camera_192.168.137.177.pcapng` | 178.128s | 3865 | 1666268 bytes | P1-06 upstream interruption and recovery test |
 
 ## Initial DNS Observations
 
@@ -79,3 +80,4 @@ The blocked-internet scenario is intentionally left for P1-06, because it requir
 | P1-03 | `01_network_capture/communication_flow_analysis.md` | TCP/UDP flow summary across boot, preview, and PTZ/control captures |
 | P1-04 | `01_network_capture/app_preview_analysis.md` | Structured App preview capture comparison and direct phone-flow check |
 | P1-05 | `01_network_capture/app_ptz_analysis.md` | Structured PTZ/control capture analysis; includes local TCP 8800 observation |
+| P1-06 | `01_network_capture/blocked_internet_analysis.md` | Blocked-internet behavior, DNS failure window, local TCP 8800 observation, and recovery flows |
