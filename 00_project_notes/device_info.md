@@ -75,3 +75,19 @@
 | Phone MAC Address | 3a:1c:64:3b:ce:af |
 | Phone Hostname | LuessiawHonor |
 | Verification Status | Camera and phone are connected to the Windows hotspot subnet |
+
+## P0-05 Startup and App Behavior
+
+| Item | Value |
+| --- | --- |
+| Observation Time | 2026-05-14 21:04:20 +08:00 |
+| Power-on Time | 2026-05-14 21:04:20 +08:00 |
+| Board Indicator | Red LED turns on immediately and stays solid |
+| Voice Prompt 1 | About 15s after power-on: "欢迎使用" |
+| Voice Prompt 2 | About 25s after power-on: "网络连接中" |
+| Voice Prompt 3 | About 30s after power-on: "网络连接完成" |
+| App Preview Result | Successful |
+| App Preview Load Time | About 4s after tapping preview |
+| Night Vision Control | No manual night-vision option observed in the app; likely automatic |
+| Traffic Observation | Wireshark showed camera communication with 192.168.137.1 and multiple external IP addresses |
+| Phone Direct Traffic | No direct camera-to-phone communication observed during preview |

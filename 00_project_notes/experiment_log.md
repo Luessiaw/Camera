@@ -84,3 +84,98 @@
 ### Next Step
 
 - Continue with P0-03: install and verify Wireshark, Npcap, nmap, VLC, and ffmpeg/ffprobe.
+
+---
+
+## Experiment ID: EXP-0003
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw |
+| Stage | P0-03 |
+| Goal | Install and verify packet capture and network analysis tools |
+| Device State | Camera remains connected to Windows Mobile Hotspot |
+| Network State | Windows hotspot subnet is active at 192.168.137.0/24 |
+| Tools Used | Wireshark / Npcap / nmap |
+| Related Files | 01_network_capture/wireshark_notes.md |
+
+### Steps
+
+1. Installed Wireshark.
+2. Installed Npcap.
+3. Confirmed nmap is available on the Windows PC.
+4. Confirmed Wireshark can see the hotspot capture interface.
+
+### Observations
+
+- Camera IP remains 192.168.137.177.
+- Phone IP remains 192.168.137.29.
+- Hotspot gateway remains 192.168.137.1.
+- Wireshark/tshark capture interface for the hotspot is `本地连接* 10`.
+
+### Results
+
+- P0-03 is complete at the project-record level.
+
+### Problems
+
+- `wireshark.exe` and `tshark.exe` may not be in the shell PATH, but `tshark.exe` exists under `C:\Program Files\Wireshark\`.
+
+### Next Step
+
+- Continue with P0-05: record camera MAC, IP, startup timing, and App behavior.
+
+---
+
+## Experiment ID: EXP-0004
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw |
+| Stage | P0-05 |
+| Goal | Record camera MAC, IP, startup timing, and App behavior |
+| Device State | Camera successfully boots and comes online through the Windows Mobile Hotspot |
+| Network State | Camera communicates through hotspot gateway and external IPs; no direct phone traffic observed |
+| Tools Used | Windows Mobile Hotspot / Wireshark / App observation |
+| Related Files | 00_project_notes/device_info.md / 01_network_capture/wireshark_notes.md |
+
+### Steps
+
+1. Kept the camera and phone connected to the Windows Mobile Hotspot.
+2. Started a Wireshark observation on the hotspot interface.
+3. Powered on the camera at 2026-05-14 21:04:20 +08:00.
+4. Observed board LED and voice prompts during boot.
+5. Opened the camera preview in the phone App after the device reported network connection completion.
+6. Checked whether the App exposes night-vision controls.
+7. Observed whether camera traffic goes directly to the phone.
+
+### Observations
+
+- Power-on time: 2026-05-14 21:04:20 +08:00.
+- Red indicator LED on the board turned on immediately and stayed solid.
+- About 15 seconds after power-on, the camera played the voice prompt: "欢迎使用".
+- About 25 seconds after power-on, the camera played the voice prompt: "网络连接中".
+- About 30 seconds after power-on, the camera played the voice prompt: "网络连接完成".
+- After tapping the camera preview in the App, live video appeared after about 4 seconds.
+- The App did not show a manual night-vision toggle; night vision is likely automatic.
+- Wireshark showed camera traffic with 192.168.137.1 and multiple external IP addresses.
+- No direct camera-to-phone communication was observed during preview.
+
+### Results
+
+- P0-05 is complete at the project-record level.
+- The camera's base network identity is recorded: 192.168.137.177 / 58:c5:87:9a:ab:97.
+- The App preview path appears not to be direct camera-to-phone LAN streaming based on this observation.
+- The traffic pattern supports prioritizing P1 DNS/TCP/UDP analysis before any firmware work.
+
+### Problems
+
+- Exact external IP addresses and domains were not extracted yet.
+- No pcap file has been saved as project evidence yet; this belongs to P0-06.
+- Night-vision control remains unconfirmed because the App exposes no manual switch.
+
+### Next Step
+
+- Continue with P0-06: save pcapng captures for boot, App preview, and later PTZ/control scenarios.
