@@ -55,3 +55,13 @@ Detailed result:
 ## Current Stream Decision
 
 No standard local RTSP, ONVIF, HTTP/MJPEG, or obvious local video stream has been found.
+
+Detailed decision:
+
+```text
+03_video_stream_test/p2_06_no_flash_stream_decision.md
+```
+
+P2-05 is blocked because no usable stream is available for codec/resolution/frame-rate measurement.
+
+Recommended next phase: P3 read-only UART investigation.

@@ -802,3 +802,54 @@
 ### Next Step
 
 - Continue to P2-06 as a decision gate, because P2-05 requires an available stream and no usable local video stream has been found.
+
+---
+
+## Experiment ID: EXP-0017
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P2-06 |
+| Goal | Decide whether the camera can be used without firmware or serial work by directly pulling a local stream |
+| Device State | Analysis performed from completed P1/P2 evidence |
+| Network State | No new network action; decision based on previous captures and scans |
+| Tools Used | Existing P1/P2 analysis notes |
+| Related Files | 03_video_stream_test/p2_06_no_flash_stream_decision.md |
+
+### Steps
+
+1. Reviewed P1 preview, PTZ, and blocked-internet evidence.
+2. Reviewed P2-01 port scan results.
+3. Reviewed P2-02 RTSP results.
+4. Reviewed P2-03 ONVIF results.
+5. Reviewed P2-04 HTTP/MJPEG and private-service results.
+6. Determined whether P2-05 has a valid stream input.
+7. Wrote the P2-06 decision note.
+
+### Observations
+
+- No standard RTSP stream was found.
+- No ONVIF / WS-Discovery interface was found.
+- No HTTP/MJPEG stream was found.
+- `8800/tcp` is a real local private service and carries small binary payloads during App interaction.
+- `9800/tcp` is open but was not used in the P2-04 App scenario.
+- No local high-volume video-like flow was observed.
+- App preview still correlates with cloud endpoints and fails to reconnect when public internet is unavailable.
+
+### Results
+
+- P2-06 is complete.
+- Current decision: no usable local video stream is available.
+- P2-05 is blocked because there is no stream whose codec, resolution, frame rate, or bitrate can be measured.
+- The project should not proceed directly to server-side stream ingestion yet.
+
+### Problems
+
+- `8800/tcp` and `9800/tcp` protocol semantics remain unknown.
+- Cloud protocol emulation remains theoretically possible but likely high-complexity.
+
+### Next Step
+
+- Proceed to P3 read-only UART investigation before any firmware backup or firmware modification.
