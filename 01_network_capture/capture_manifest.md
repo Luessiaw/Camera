@@ -81,3 +81,4 @@ The blocked-internet scenario is intentionally left for P1-06, because it requir
 | P1-04 | `01_network_capture/app_preview_analysis.md` | Structured App preview capture comparison and direct phone-flow check |
 | P1-05 | `01_network_capture/app_ptz_analysis.md` | Structured PTZ/control capture analysis; includes local TCP 8800 observation |
 | P1-06 | `01_network_capture/blocked_internet_analysis.md` | Blocked-internet behavior, DNS failure window, local TCP 8800 observation, and recovery flows |
+| P1-07 | `01_network_capture/local_video_interface_assessment.md` | Local video interface assessment; common RTSP/HTTP/ONVIF ports closed, TCP 8800 open |

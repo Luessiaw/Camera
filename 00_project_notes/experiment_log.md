@@ -548,3 +548,54 @@
 ### Next Step
 
 - Continue with local service discovery and TCP 8800-focused checks in the next phase.
+
+---
+
+## Experiment ID: EXP-0012
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P1-07 |
+| Goal | Determine whether a directly usable local video interface exists |
+| Device State | Camera online on Windows Mobile Hotspot |
+| Network State | Camera reachable at 192.168.137.177 |
+| Tools Used | ping.exe / nmap / curl.exe |
+| Related Files | 01_network_capture/local_video_interface_assessment.md |
+
+### Steps
+
+1. Reassessed the task sequence after P1-06.
+2. Confirmed P1-07 should include active checks for common local video ports and TCP 8800.
+3. Confirmed the camera is reachable with ICMP ping.
+4. Scanned common TCP video/service ports.
+5. Ran service fingerprinting against TCP 8800 and common video ports.
+6. Checked common UDP discovery ports, including ONVIF WS-Discovery.
+7. Sent a basic HTTP request to TCP 8800.
+
+### Observations
+
+- Camera ping succeeded with 1-2 ms latency and TTL 64.
+- TCP 80, 443, 554, 8554, 8080, and 8899 were closed.
+- TCP 8800 was open.
+- Nmap identified TCP 8800 as `unknown-camera` / `V308 camera service`.
+- UDP 3702, 1900, 5353, 8800, and 8899 were closed.
+- HTTP probing TCP 8800 connected but returned an empty reply, so it is not a normal HTTP endpoint.
+
+### Results
+
+- P1-07 is complete at the initial local-interface level.
+- No standard RTSP, HTTP/MJPEG, or ONVIF local video interface was found.
+- A proprietary local camera service exists on TCP 8800.
+- The follow-up task order does not need a major change, but P2-04 should explicitly include TCP 8800 proprietary protocol investigation.
+
+### Problems
+
+- This was a targeted initial scan, not a full port inventory.
+- ffprobe/ffmpeg were not available in PATH during this check.
+- TCP 8800 protocol semantics remain unknown.
+
+### Next Step
+
+- Continue to P2-01: perform a fuller port scan and service inventory.
