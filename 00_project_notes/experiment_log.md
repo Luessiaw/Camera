@@ -653,3 +653,152 @@
 ### Next Step
 
 - Continue to P2-02: test common RTSP URLs, with low expected success because standard RTSP ports are closed.
+
+---
+
+## Experiment ID: EXP-0014
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P2-02 |
+| Goal | Test common RTSP stream URLs |
+| Device State | Camera online on Windows Mobile Hotspot |
+| Network State | Camera reachable at 192.168.137.177 |
+| Tools Used | nmap / curl.exe / manual TCP RTSP probe |
+| Related Files | 03_video_stream_test/rtsp_tests/rtsp_test_results.md / 03_video_stream_test/rtsp_tests/20260514_p2_02_rtsp_ports.txt |
+
+### Steps
+
+1. Checked local availability of `ffprobe`, `ffmpeg`, and `curl.exe`.
+2. Confirmed `ffprobe` and `ffmpeg` were not available in PATH.
+3. Confirmed this Windows `curl.exe` build has RTSP disabled.
+4. Scanned common RTSP/video-related TCP ports.
+5. Considered common RTSP URL patterns on `554/tcp`, `8554/tcp`, and `10554/tcp`.
+6. Sent manual RTSP `OPTIONS` and `DESCRIBE` requests to `8800/tcp` and `9800/tcp`.
+7. Recorded results in `03_video_stream_test/`.
+
+### Observations
+
+- `554/tcp`, `8554/tcp`, and `10554/tcp` are closed.
+- Other common streaming-related ports checked in this step, including `1554/tcp`, `1935/tcp`, `7070/tcp`, `8000/tcp`, and `8080/tcp`, are closed.
+- `8800/tcp` and `9800/tcp` remain open.
+- Manual RTSP `OPTIONS` and `DESCRIBE` requests to `8800/tcp` produced no response.
+- Manual RTSP `OPTIONS` and `DESCRIBE` requests to `9800/tcp` produced no response.
+
+### Results
+
+- P2-02 is complete.
+- No local RTSP stream was found.
+- Common RTSP URL patterns are not viable because the standard RTSP ports are closed.
+- `8800/tcp` and `9800/tcp` do not behave like normal RTSP services.
+
+### Problems
+
+- `ffprobe` and `ffmpeg` are not available in PATH.
+- `curl.exe` cannot directly test RTSP URLs because RTSP support is disabled in this build.
+
+### Next Step
+
+- Continue to P2-03 ONVIF testing for completeness, with low expected success because `3702/udp` is closed.
+
+---
+
+## Experiment ID: EXP-0015
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P2-03 |
+| Goal | Test whether the camera exposes ONVIF / WS-Discovery |
+| Device State | Camera online on Windows Mobile Hotspot |
+| Network State | Camera reachable at 192.168.137.177 |
+| Tools Used | nmap / PowerShell UDP WS-Discovery probe |
+| Related Files | 03_video_stream_test/onvif_tests/onvif_test_results.md |
+
+### Steps
+
+1. Scanned common UDP discovery ports, including `3702/udp`.
+2. Scanned common ONVIF HTTP/TCP service ports.
+3. Sent a manual SOAP WS-Discovery Probe to multicast `239.255.255.250:3702`.
+4. Sent the same manual WS-Discovery Probe directly to `192.168.137.177:3702`.
+5. Listened for WS-Discovery responses.
+6. Recorded results in `03_video_stream_test/onvif_tests/`.
+
+### Observations
+
+- `3702/udp` is closed.
+- `1900/udp`, `5353/udp`, `8899/udp`, `5000/udp`, `5001/udp`, `8080/udp`, and `80/udp` are closed.
+- Common ONVIF HTTP/TCP ports, including `80/tcp`, `8080/tcp`, `8899/tcp`, `5000/tcp`, `5001/tcp`, `8000/tcp`, `8001/tcp`, `8081/tcp`, `8088/tcp`, and `8090/tcp`, are closed.
+- Manual WS-Discovery Probe sent to `239.255.255.250:3702` received no response.
+- Manual WS-Discovery Probe sent to `192.168.137.177:3702` received no response.
+
+### Results
+
+- P2-03 is complete.
+- No local ONVIF interface was found.
+- The camera does not appear to support standard ONVIF discovery or common ONVIF HTTP service ports in the current network state.
+
+### Problems
+
+- GUI ONVIF Device Manager was not used in this step, but command-line WS-Discovery and port evidence are already sufficient for an initial negative result.
+
+### Next Step
+
+- Continue to P2-04: HTTP/MJPEG and proprietary local service checks, focusing especially on `8800/tcp` and `9800/tcp`.
+
+---
+
+## Experiment ID: EXP-0016
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P2-04 |
+| Goal | Test HTTP/MJPEG paths and private local services |
+| Device State | Camera online on Windows Mobile Hotspot |
+| Network State | Camera reachable at 192.168.137.177 |
+| Tools Used | curl.exe / tshark / Wireshark |
+| Related Files | 03_video_stream_test/http_stream_tests/http_mjpeg_private_service_results.md / 03_video_stream_test/http_stream_tests/20260514_p2_04_app_preview_private_ports_camera_192.168.137.177.pcapng |
+
+### Steps
+
+1. Tested common HTTP/MJPEG paths on `80/tcp`, `8800/tcp`, and `9800/tcp`.
+2. Started a 100-second camera-filtered dynamic capture.
+3. Asked the operator to enter preview, press one direction key, exit preview, and enter preview again during the capture.
+4. Extracted IP, TCP, UDP, DNS, TLS, and local TCP 8800 evidence from the capture.
+5. Compared local private-port traffic against cloud traffic.
+
+### Observations
+
+- `80/tcp` did not provide a usable web/MJPEG response.
+- `8800/tcp` accepted TCP connections, but common HTTP/MJPEG paths returned empty reply.
+- `9800/tcp` accepted TCP connections, but common HTTP/MJPEG paths returned empty reply or timeout.
+- Dynamic capture saved as `20260514_p2_04_app_preview_private_ports_camera_192.168.137.177.pcapng`.
+- The capture contained 153 packets over 95.776676100 seconds.
+- Two local phone-to-camera `8800/tcp` 16-byte payloads appeared at about 38.60s and 41.87s.
+- Payloads observed: `aa000000e803e803ea03e80300000000` and `bc000000000000000000000000000000`.
+- No `9800/tcp` traffic appeared in the dynamic App capture.
+- Cloud endpoints remained active: `devota.av380.net` / `218.91.170.134:443` and `ipc79.w390.net` / `120.27.12.196`.
+- The capture volume was far too small for a local video stream.
+
+### Results
+
+- P2-04 is complete.
+- No local HTTP/MJPEG stream was found.
+- `8800/tcp` is confirmed as a local private camera service used during App interaction.
+- `9800/tcp` is open but was not used during this App preview/control scenario.
+- There is still no evidence of a standard local video stream.
+
+### Problems
+
+- The exact manual action timing may be approximate.
+- The private `8800/tcp` binary payload semantics are not decoded.
+- Camera-filtered capture cannot fully show phone-to-cloud traffic.
+
+### Next Step
+
+- Continue to P2-06 as a decision gate, because P2-05 requires an available stream and no usable local video stream has been found.

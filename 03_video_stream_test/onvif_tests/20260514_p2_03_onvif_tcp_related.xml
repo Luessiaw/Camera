@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///C:/Program Files (x86)/Nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.99 scan initiated Thu May 14 22:54:46 2026 as: &quot;C:\\Program Files (x86)\\Nmap\\nmap.exe&quot; -sT -Pn -n -&#45;reason -p 80,8080,8899,5000,5001,8000,8001,8081,8088,8090 -oN 03_video_stream_test\\onvif_tests\\20260514_p2_03_onvif_tcp_related.txt -oX 03_video_stream_test\\onvif_tests\\20260514_p2_03_onvif_tcp_related.xml 192.168.137.177 -->
+<nmaprun scanner="nmap" args="&quot;C:\\Program Files (x86)\\Nmap\\nmap.exe&quot; -sT -Pn -n -&#45;reason -p 80,8080,8899,5000,5001,8000,8001,8081,8088,8090 -oN 03_video_stream_test\\onvif_tests\\20260514_p2_03_onvif_tcp_related.txt -oX 03_video_stream_test\\onvif_tests\\20260514_p2_03_onvif_tcp_related.xml 192.168.137.177" start="1778770486" startstr="Thu May 14 22:54:46 2026" version="7.99" xmloutputversion="1.05">
+<scaninfo type="connect" protocol="tcp" numservices="10" services="80,5000-5001,8000-8001,8080-8081,8088,8090,8899"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<host starttime="1778770486" endtime="1778770486"><status state="up" reason="user-set" reason_ttl="0"/>
+<address addr="192.168.137.177" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<ports><port protocol="tcp" portid="80"><state state="closed" reason="conn-refused" reason_ttl="0"/><service name="http" method="table" conf="3"/></port>
+<port protocol="tcp" portid="5000"><state state="closed" reason="conn-refused" reason_ttl="0"/><service name="upnp" method="table" conf="3"/></port>
+<port protocol="tcp" portid="5001"><state state="closed" reason="conn-refused" reason_ttl="0"/><service name="commplex-link" method="table" conf="3"/></port>
+<port protocol="tcp" portid="8000"><state state="closed" reason="conn-refused" reason_ttl="0"/><service name="http-alt" method="table" conf="3"/></port>
+<port protocol="tcp" portid="8001"><state state="closed" reason="conn-refused" reason_ttl="0"/><service name="vcom-tunnel" method="table" conf="3"/></port>
+<port protocol="tcp" portid="8080"><state state="closed" reason="conn-refused" reason_ttl="0"/><service name="http-proxy" method="table" conf="3"/></port>
+<port protocol="tcp" portid="8081"><state state="closed" reason="conn-refused" reason_ttl="0"/><service name="blackice-icecap" method="table" conf="3"/></port>
+<port protocol="tcp" portid="8088"><state state="closed" reason="conn-refused" reason_ttl="0"/><service name="radan-http" method="table" conf="3"/></port>
+<port protocol="tcp" portid="8090"><state state="closed" reason="conn-refused" reason_ttl="0"/><service name="opsmessaging" method="table" conf="3"/></port>
+<port protocol="tcp" portid="8899"><state state="closed" reason="conn-refused" reason_ttl="0"/><service name="ospf-lite" method="table" conf="3"/></port>
+</ports>
+<times srtt="2155" rttvar="661" to="100000"/>
+</host>
+<runstats><finished time="1778770486" timestr="Thu May 14 22:54:46 2026" summary="Nmap done at Thu May 14 22:54:46 2026; 1 IP address (1 host up) scanned in 0.04 seconds" elapsed="0.04" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>

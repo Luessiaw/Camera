@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///C:/Program Files (x86)/Nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.99 scan initiated Thu May 14 22:54:47 2026 as: &quot;C:\\Program Files (x86)\\Nmap\\nmap.exe&quot; -sU -Pn -n -&#45;reason -p 3702,1900,5353,8899,5000,5001,8080,80 -oN 03_video_stream_test\\onvif_tests\\20260514_p2_03_onvif_udp_tcp_related.txt -oX 03_video_stream_test\\onvif_tests\\20260514_p2_03_onvif_udp_tcp_related.xml 192.168.137.177 -->
+<nmaprun scanner="nmap" args="&quot;C:\\Program Files (x86)\\Nmap\\nmap.exe&quot; -sU -Pn -n -&#45;reason -p 3702,1900,5353,8899,5000,5001,8080,80 -oN 03_video_stream_test\\onvif_tests\\20260514_p2_03_onvif_udp_tcp_related.txt -oX 03_video_stream_test\\onvif_tests\\20260514_p2_03_onvif_udp_tcp_related.xml 192.168.137.177" start="1778770487" startstr="Thu May 14 22:54:47 2026" version="7.99" xmloutputversion="1.05">
+<scaninfo type="udp" protocol="udp" numservices="8" services="80,1900,3702,5000-5001,5353,8080,8899"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.137.177" addrtype="ipv4"/>
+<address addr="58:C5:87:9A:AB:97" addrtype="mac" vendor="AltoBeam"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<host starttime="1778770487" endtime="1778770492"><status state="up" reason="arp-response" reason_ttl="0"/>
+<address addr="192.168.137.177" addrtype="ipv4"/>
+<address addr="58:C5:87:9A:AB:97" addrtype="mac" vendor="AltoBeam"/>
+<hostnames>
+</hostnames>
+<ports><port protocol="udp" portid="80"><state state="closed" reason="port-unreach" reason_ttl="64"/><service name="http" method="table" conf="3"/></port>
+<port protocol="udp" portid="1900"><state state="closed" reason="port-unreach" reason_ttl="64"/><service name="upnp" method="table" conf="3"/></port>
+<port protocol="udp" portid="3702"><state state="closed" reason="port-unreach" reason_ttl="64"/><service name="ws-discovery" method="table" conf="3"/></port>
+<port protocol="udp" portid="5000"><state state="closed" reason="port-unreach" reason_ttl="64"/><service name="upnp" method="table" conf="3"/></port>
+<port protocol="udp" portid="5001"><state state="closed" reason="port-unreach" reason_ttl="64"/><service name="commplex-link" method="table" conf="3"/></port>
+<port protocol="udp" portid="5353"><state state="closed" reason="port-unreach" reason_ttl="64"/><service name="zeroconf" method="table" conf="3"/></port>
+<port protocol="udp" portid="8080"><state state="closed" reason="port-unreach" reason_ttl="64"/><service name="http-alt" method="table" conf="3"/></port>
+<port protocol="udp" portid="8899"><state state="closed" reason="port-unreach" reason_ttl="64"/><service name="ospf-lite" method="table" conf="3"/></port>
+</ports>
+<times srtt="12236" rttvar="9867" to="100000"/>
+</host>
+<runstats><finished time="1778770492" timestr="Thu May 14 22:54:52 2026" summary="Nmap done at Thu May 14 22:54:52 2026; 1 IP address (1 host up) scanned in 4.87 seconds" elapsed="4.87" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>

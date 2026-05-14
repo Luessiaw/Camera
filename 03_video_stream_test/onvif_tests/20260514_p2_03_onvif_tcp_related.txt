@@ -1,0 +1,17 @@
+# Nmap 7.99 scan initiated Thu May 14 22:54:46 2026 as: "C:\\Program Files (x86)\\Nmap\\nmap.exe" -sT -Pn -n --reason -p 80,8080,8899,5000,5001,8000,8001,8081,8088,8090 -oN 03_video_stream_test\\onvif_tests\\20260514_p2_03_onvif_tcp_related.txt -oX 03_video_stream_test\\onvif_tests\\20260514_p2_03_onvif_tcp_related.xml 192.168.137.177
+Nmap scan report for 192.168.137.177
+Host is up, received user-set (0.0022s latency).
+
+PORT     STATE  SERVICE         REASON
+80/tcp   closed http            conn-refused
+5000/tcp closed upnp            conn-refused
+5001/tcp closed commplex-link   conn-refused
+8000/tcp closed http-alt        conn-refused
+8001/tcp closed vcom-tunnel     conn-refused
+8080/tcp closed http-proxy      conn-refused
+8081/tcp closed blackice-icecap conn-refused
+8088/tcp closed radan-http      conn-refused
+8090/tcp closed opsmessaging    conn-refused
+8899/tcp closed ospf-lite       conn-refused
+
+# Nmap done at Thu May 14 22:54:46 2026 -- 1 IP address (1 host up) scanned in 0.04 seconds

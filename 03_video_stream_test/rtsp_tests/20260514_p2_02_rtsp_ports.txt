@@ -1,0 +1,18 @@
+# Nmap 7.99 scan initiated Thu May 14 22:51:27 2026 as: "C:\\Program Files (x86)\\Nmap\\nmap.exe" -sT -Pn -n --reason -p 554,8554,10554,1554,8555,7070,1935,8000,8080,8800,9800 -oN 03_video_stream_test\\rtsp_tests\\20260514_p2_02_rtsp_ports.txt -oX 03_video_stream_test\\rtsp_tests\\20260514_p2_02_rtsp_ports.xml 192.168.137.177
+Nmap scan report for 192.168.137.177
+Host is up, received user-set (0.020s latency).
+
+PORT      STATE  SERVICE     REASON
+554/tcp   closed rtsp        conn-refused
+1554/tcp  closed caci-lm     conn-refused
+1935/tcp  closed rtmp        conn-refused
+7070/tcp  closed realserver  conn-refused
+8000/tcp  closed http-alt    conn-refused
+8080/tcp  closed http-proxy  conn-refused
+8554/tcp  closed rtsp-alt    conn-refused
+8555/tcp  closed d-fence     conn-refused
+8800/tcp  open   sunwebadmin syn-ack
+9800/tcp  open   davsrc      syn-ack
+10554/tcp closed unknown     conn-refused
+
+# Nmap done at Thu May 14 22:51:27 2026 -- 1 IP address (1 host up) scanned in 0.08 seconds
