@@ -372,3 +372,121 @@
 ### Next Step
 
 - Continue with P1-04 and P1-05 as validation captures, or proceed to P1-06 if the goal is to test offline/local behavior next.
+
+---
+
+## Experiment ID: EXP-0009
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P1-04 |
+| Goal | Validate App preview traffic path |
+| Device State | Camera online through Windows Mobile Hotspot |
+| Network State | Camera on 192.168.137.177, phone on 192.168.137.29, gateway on 192.168.137.1 |
+| Tools Used | tshark / Wireshark / phone App |
+| Related Files | 01_network_capture/pcap_raw/20260514_app_preview_structured_camera_192.168.137.177.pcapng / 01_network_capture/app_preview_analysis.md |
+
+### Steps
+
+1. Started a 90-second structured capture on the Windows Mobile Hotspot interface.
+2. Closed and reopened the App live preview during the capture window.
+3. Kept the live preview running until the capture ended.
+4. Extracted IP/TCP/UDP conversations.
+5. Checked for direct traffic involving the phone IP `192.168.137.29`.
+6. Compared the structured capture against the earlier preview baseline.
+
+### Observations
+
+- Structured preview capture saved as `20260514_app_preview_structured_camera_192.168.137.177.pcapng`.
+- The capture contains 133 packets and is 54148 bytes.
+- Main remote endpoints are `58.221.36.18`, `120.27.12.196`, `192.168.137.1`, and `17.253.116.125`.
+- `devota.av380.net` appears as TLS SNI on `58.221.36.18:443`.
+- `ipc79.w390.net` resolves to `120.27.12.196`.
+- No packets involving the phone IP `192.168.137.29` were found in the camera-filtered capture.
+
+### Results
+
+- P1-04 is complete.
+- App preview does not appear to use a direct camera-to-phone LAN stream.
+- Preview-related camera traffic is consistent with vendor/cloud-mediated communication.
+
+### Problems
+
+- Capture confirms the camera side only; phone-side packet capture would be required to prove the complete App path.
+- This does not rule out unused local services on the camera.
+
+### Next Step
+
+- Continue with P1-05: structured PTZ/control capture with explicit movement action timestamps.
+
+---
+
+## Experiment ID: EXP-0010
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P1-05 |
+| Goal | Capture and analyze App PTZ/control traffic |
+| Device State | Camera online through Windows Mobile Hotspot |
+| Network State | Camera on 192.168.137.177, phone on 192.168.137.29, gateway on 192.168.137.1 |
+| Tools Used | tshark / Wireshark / phone App |
+| Related Files | 01_network_capture/pcap_raw/20260514_app_ptz_structured_camera_192.168.137.177.pcapng / 01_network_capture/app_ptz_analysis.md |
+
+### Steps
+
+1. Started a 120-second structured PTZ/control capture on the Windows Mobile Hotspot interface.
+2. Planned manual actions at 10s, 20s, 30s, 40s, 50s, and 60s.
+3. Extracted IP/TCP/UDP conversations from the saved pcapng file.
+4. Checked for phone-to-camera direct traffic.
+5. Focused analysis on `120.27.12.196` and local phone-to-camera traffic.
+
+### Observations
+
+- Structured PTZ capture saved as `20260514_app_ptz_structured_camera_192.168.137.177.pcapng`.
+- The capture contains 122 packets and is 56704 bytes.
+- `120.27.12.196` remains active during the PTZ/control window.
+- The camera uses TCP 1340 and UDP 8877, 9001, 7788, and 1341 with `120.27.12.196`.
+- A local phone-to-camera packet appears at 26.439911s: `192.168.137.29:39202 -> 192.168.137.177:8800`, TCP payload `bc000000000000000000000000000000`.
+- This phone-to-camera packet is small and is not a video stream.
+
+### Results
+
+- P1-05 capture is complete.
+- Initial analysis suggests PTZ/control may involve both a local TCP 8800 signal and the existing cloud IPC channel.
+- Final action attribution is pending the manual operation log.
+
+### Problems
+
+- The exact success/failure and "连接中" timing for each direction action has not yet been recorded in this log.
+- Camera-side capture cannot fully prove whether the phone-to-cloud path stalled.
+
+### Next Step
+
+- Add manual PTZ action results to `01_network_capture/app_ptz_analysis.md`.
+
+### Manual Action Log Addendum
+
+| Relative Time | Action | Result |
+| ---: | --- | --- |
+| 12s | Up | Success |
+| 21s | Down | Success |
+| 31-38s | Left | App showed "connecting"; video interrupted; motor moved after the stall |
+| 40s | Right | Success |
+| 50s | Left | Success |
+| 60s | Right | Success |
+
+### Final P1-05 Result
+
+- P1-05 is complete.
+- PTZ/control may involve both a local TCP 8800 signal and the existing cloud IPC channel.
+- The App stall around 31-38s correlates with `ipc79.w390.net` cloud IPC refresh/re-setup timing.
+- Camera-side UDP 8877 traffic continued during the stall window, so the camera network path did not fully stop.
+- More repeated direction-specific captures would be required to map TCP 8800 payloads to exact PTZ directions.
+
+### Updated Next Step
+
+- Continue with P1-06: block public internet and observe offline/local behavior.
