@@ -227,3 +227,148 @@
 ### Next Step
 
 - Continue with P1-01: analyze the saved boot pcap and extract the boot-stage network behavior.
+
+---
+
+## Experiment ID: EXP-0006
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P1-01 |
+| Goal | Analyze the saved camera boot pcap and extract boot-stage network behavior |
+| Device State | Analysis performed on saved boot pcap |
+| Network State | Baseline online boot capture from Windows Mobile Hotspot |
+| Tools Used | tshark |
+| Related Files | 01_network_capture/pcap_raw/20260514_2104_boot_online_camera_192.168.137.177.pcapng / 01_network_capture/boot_capture_analysis.md |
+
+### Steps
+
+1. Loaded the saved boot pcapng file with tshark.
+2. Extracted protocol hierarchy statistics.
+3. Extracted IPv4, TCP, and UDP conversation summaries.
+4. Extracted DNS, DHCP, NTP, HTTP, TLS, and key transport events in relative-time order.
+5. Wrote the P1-01 analysis to `01_network_capture/boot_capture_analysis.md`.
+
+### Observations
+
+- The boot pcap contains 288 frames.
+- Main protocols include TCP, UDP/DNS, DHCP, NTP, HTTP JSON, TLSv1.2, ICMP, and ARP.
+- DHCP Offer and ACK from `192.168.137.1` appear around 49.3s relative time.
+- DNS resolution begins immediately after DHCP, including `ntp.sjtu.edu.cn` and several `av380.net` / `w390.net` domains.
+- Plain HTTP JSON calls are visible to `svc.av380.net`, `alivetype.av380.net`, `alarmserverlist.av380.net`, `logs.av380.net`, and `push2.av380.net`.
+- TLSv1.2 traffic uses SNI `devota.av380.net`.
+- Custom UDP-like traffic is visible with `120.27.12.196`, including ports 8877, 9001, 7788, and 1341.
+
+### Results
+
+- P1-01 is complete.
+- The boot capture is sufficient for P1-02 DNS analysis and P1-03 TCP/UDP flow analysis.
+- Initial evidence indicates the camera performs cloud service discovery, time sync, log/meta reporting, and persistent/custom UDP communication during boot.
+
+### Problems
+
+- The capture starts with existing UDP traffic, so the first packet is not necessarily the first packet emitted by the camera after power-on.
+- Some HTTP payload details may contain device identifiers and should be handled carefully.
+
+### Next Step
+
+- Continue with P1-02: analyze DNS requests and list primary cloud service domains.
+
+---
+
+## Experiment ID: EXP-0007
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P1-02 |
+| Goal | Analyze DNS requests and identify primary cloud service domains |
+| Device State | Analysis performed on saved pcap files |
+| Network State | Baseline online boot, App preview, and App PTZ/control captures |
+| Tools Used | tshark |
+| Related Files | 01_network_capture/dns_analysis.md |
+
+### Steps
+
+1. Extracted DNS requests and responses from the boot capture.
+2. Extracted DNS requests and responses from the App preview capture.
+3. Extracted DNS requests and responses from the App PTZ/control capture.
+4. Compared domain appearances across scenarios.
+5. Cross-checked DNS names against observed HTTP and TLS traffic where possible.
+6. Wrote the DNS analysis to `01_network_capture/dns_analysis.md`.
+
+### Observations
+
+- Main vendor domain family: `av380.net`.
+- Additional IPC/cloud channel domain family: `w390.net`.
+- Time sync uses `ntp.sjtu.edu.cn`.
+- `ipc79.w390.net` appears in boot, preview, and PTZ/control captures.
+- `devota.av380.net` appears in boot and preview captures and is used as TLS SNI.
+- HTTP endpoints under `svc.av380.net`, `alivetype.av380.net`, `alarmserverlist.av380.net`, `logs.av380.net`, and `push2.av380.net` are visible in plaintext.
+
+### Results
+
+- P1-02 is complete.
+- Primary cloud domains are identified and grouped by observed role.
+- `ipc79.w390.net` and `devota.av380.net` should be prioritized in P1-03.
+
+### Problems
+
+- DNS analysis alone cannot prove exact application semantics.
+- Some endpoint roles are inferred from domain names, paths, and scenario correlation; P1-03 should confirm via flow behavior.
+
+### Next Step
+
+- Continue with P1-03: analyze TCP and UDP communication flows.
+
+---
+
+## Experiment ID: EXP-0008
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P1-03 |
+| Goal | Analyze TCP and UDP communication flows |
+| Device State | Analysis performed on saved pcap files |
+| Network State | Baseline online boot, App preview, and App PTZ/control captures |
+| Tools Used | tshark |
+| Related Files | 01_network_capture/communication_flow_analysis.md |
+
+### Steps
+
+1. Reviewed the current task sequence before continuing.
+2. Confirmed no major adjustment is required before P1-03.
+3. Extracted TCP and UDP conversation summaries from boot, preview, and PTZ captures.
+4. Focused detailed packet timing on `120.27.12.196` / `ipc79.w390.net`.
+5. Compared HTTP, TLS, and custom UDP traffic across scenarios.
+6. Wrote the analysis to `01_network_capture/communication_flow_analysis.md`.
+
+### Observations
+
+- `120.27.12.196` appears in boot, preview, and PTZ/control captures.
+- `120.27.12.196` uses TCP 1340 and UDP 8877, 9001, 7788, and 1341.
+- TCP 1340 sessions are very short and close immediately.
+- UDP 8877 becomes the dominant repeated flow and looks keepalive-like.
+- Plain HTTP cloud service endpoints are visible under `av380.net`.
+- TLSv1.2 traffic uses SNI `devota.av380.net`.
+- No direct camera-to-phone TCP/UDP path was identified in the current summaries.
+
+### Results
+
+- P1-03 is complete.
+- Remote IPs, ports, and broad protocol types are listed.
+- `ipc79.w390.net` / `120.27.12.196` is the highest-priority endpoint for later control/relay behavior analysis.
+
+### Problems
+
+- Preview and PTZ captures are short baseline captures; structured repeat captures would improve confidence.
+- Packet payload semantics for the custom UDP flows are not decoded.
+
+### Next Step
+
+- Continue with P1-04 and P1-05 as validation captures, or proceed to P1-06 if the goal is to test offline/local behavior next.

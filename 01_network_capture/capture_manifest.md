@@ -67,3 +67,11 @@ These are preliminary observations only. Full DNS/TCP/UDP analysis belongs to P1
 P0-06 is complete for the initial online, App preview, and App PTZ/control scenarios.
 
 The blocked-internet scenario is intentionally left for P1-06, because it requires changing firewall/DNS behavior and comparing the camera's offline behavior against the baseline captures above.
+
+## Follow-up Analysis
+
+| Stage | File | Notes |
+| --- | --- | --- |
+| P1-01 | `01_network_capture/boot_capture_analysis.md` | Boot-stage timeline, protocol summary, and main remote conversations |
+| P1-02 | `01_network_capture/dns_analysis.md` | DNS domain inventory, observed addresses, and initial endpoint roles |
+| P1-03 | `01_network_capture/communication_flow_analysis.md` | TCP/UDP flow summary across boot, preview, and PTZ/control captures |
