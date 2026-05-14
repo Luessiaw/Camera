@@ -599,3 +599,57 @@
 ### Next Step
 
 - Continue to P2-01: perform a fuller port scan and service inventory.
+
+---
+
+## Experiment ID: EXP-0013
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-14 |
+| Operator | Luessiaw / Codex |
+| Stage | P2-01 |
+| Goal | Perform a fuller port scan and service inventory |
+| Device State | Camera online on Windows Mobile Hotspot |
+| Network State | Camera reachable at 192.168.137.177 |
+| Tools Used | ping.exe / nmap / curl.exe / PowerShell TcpClient |
+| Related Files | 02_network_scan/port_scan_results.md / 02_network_scan/nmap/*.txt / 02_network_scan/nmap/*.xml |
+
+### Steps
+
+1. Confirmed the camera was reachable by ICMP ping.
+2. Ran a full TCP connect scan across all 65535 ports.
+3. Ran a UDP top-100 scan.
+4. Ran service fingerprinting against discovered TCP ports.
+5. Re-scanned discovered TCP ports to check whether their state was stable.
+6. Performed basic banner and HTTP-style probes against discovered TCP ports.
+7. Recorded commands and results in `02_network_scan/`.
+
+### Observations
+
+- Full TCP scan found `25/tcp`, `110/tcp`, `143/tcp`, `8800/tcp`, and `9800/tcp` open.
+- A quick rescan again showed the same five ports open.
+- Service fingerprinting reported `8800/tcp` as `unknown-camera` / `V308 camera service`.
+- Service fingerprinting reported `9800/tcp` as `davsrc?`.
+- During service fingerprinting, `25/tcp`, `110/tcp`, and `143/tcp` appeared closed/reset rather than open.
+- No initial banner was observed on any discovered TCP port.
+- HTTP-style probes to `25/tcp`, `110/tcp`, and `143/tcp` connected and then reset.
+- HTTP-style probes to `8800/tcp` and `9800/tcp` connected but returned an empty reply.
+- UDP top-100 scan found no open UDP ports.
+
+### Results
+
+- P2-01 is complete.
+- Stable useful candidates are `8800/tcp` and `9800/tcp`.
+- `25/tcp`, `110/tcp`, and `143/tcp` are suspicious/unstable and should not be treated as standard mail services without stronger evidence.
+- No standard local RTSP, HTTP/MJPEG, ONVIF, SSDP, or mDNS service was found.
+
+### Problems
+
+- Nmap service fingerprinting of open ports is slow and can change the observed state of `25/tcp`, `110/tcp`, and `143/tcp`.
+- `ffprobe` and `ffmpeg` are still not available in PATH.
+- `8800/tcp` and `9800/tcp` protocol semantics remain unknown.
+
+### Next Step
+
+- Continue to P2-02: test common RTSP URLs, with low expected success because standard RTSP ports are closed.
