@@ -853,3 +853,90 @@
 ### Next Step
 
 - Proceed to P3 read-only UART investigation before any firmware backup or firmware modification.
+
+---
+
+## Experiment ID: EXP-0018
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-15 |
+| Operator | Luessiaw / Codex |
+| Stage | P3-01 |
+| Goal | Confirm GND reference points while the camera is powered off |
+| Device State | Camera powered off |
+| Network State | Not relevant |
+| Tools Used | Multimeter continuity mode |
+| Related Files | 04_uart_logs/uart_connection_notes.md |
+
+### Steps
+
+1. Powered off the camera.
+2. Used the multimeter continuity/beep mode.
+3. Tested continuity between the large copper area and likely ground points.
+4. Reported the points that beeped against the copper area.
+
+### Observations
+
+- Large copper area and power negative pad beeped.
+- Large copper area and a U10 pad beeped.
+- Large copper area and the pad below the `v1.0` marking beeped.
+- Large copper area and the silver solder matrix below `J5` beeped.
+
+### Results
+
+- P3-01 is complete at the practical level.
+- The large copper area and power negative pad are valid GND reference candidates.
+- Multiple board points are on the same GND net.
+
+### Problems
+
+- RX/TX have not been identified yet.
+- UART voltage level is not confirmed yet.
+
+### Next Step
+
+- Continue to P3-02: power the camera normally and measure RX/TX idle voltage relative to the confirmed GND reference.
+
+---
+
+## Experiment ID: EXP-0019
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-15 |
+| Operator | Luessiaw / Codex |
+| Stage | P3-02 |
+| Goal | Measure UART RX/TX idle voltage |
+| Device State | Camera powered on with original power supply |
+| Network State | Not relevant |
+| Tools Used | Multimeter DC voltage mode |
+| Related Files | 04_uart_logs/uart_connection_notes.md |
+
+### Steps
+
+1. Used the confirmed GND reference from P3-01.
+2. Powered the camera normally.
+3. Measured RX voltage relative to GND after power-on.
+4. Measured TX voltage relative to GND after power-on.
+5. Observed whether each point stayed stable or showed short drops.
+
+### Observations
+
+- RX rose to about 3.23 V after power-on and stayed basically stable within about +/-0.01 V.
+- TX rose to about 3.29 V after power-on and showed multiple brief drops below 3 V.
+
+### Results
+
+- P3-02 is complete at the practical level.
+- RX/TX levels are consistent with 3.3 V TTL UART.
+- TX likely emits boot log data because it shows short voltage drops after power-on.
+
+### Problems
+
+- UART baud rate is not confirmed yet.
+- No USB-TTL wiring has been connected yet.
+
+### Next Step
+
+- Continue to P3-03: confirm the read-only wiring plan before connecting USB-TTL.
