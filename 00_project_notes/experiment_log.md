@@ -940,3 +940,110 @@
 ### Next Step
 
 - Continue to P3-03: confirm the read-only wiring plan before connecting USB-TTL.
+
+---
+
+## Experiment ID: EXP-0020
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-16 |
+| Operator | Luessiaw / Codex |
+| Stage | P3-03 to P3-08 |
+| Goal | Capture and analyze read-only UART boot log |
+| Device State | Camera powered through original supply; USB-TTL level corrected to 3.3 V |
+| Network State | Camera connected to Windows Mobile Hotspot during boot |
+| Tools Used | TF UTL340T USB-TTL / MobaXterm / UART log |
+| Related Files | 04_uart_logs/raw_logs/20260516-2023MobaXterm terminal output.log / 04_uart_logs/bootlog_analysis.md |
+
+### Steps
+
+1. Connected USB-TTL in read-only mode: camera GND to USB-TTL GND, camera TX to USB-TTL RXD.
+2. Identified the USB-TTL serial port as COM5.
+3. Initially observed board speaker noise while the USB-TTL module was set to 5 V.
+4. Corrected the USB-TTL module level to 3.3 V; the noise stopped.
+5. Rebooted the camera and captured serial output with MobaXterm.
+6. Saved the raw log under `04_uart_logs/raw_logs/`.
+7. Analyzed the raw boot log and wrote findings to `04_uart_logs/bootlog_analysis.md`.
+
+### Observations
+
+- UART settings `115200 8N1` work.
+- U-Boot version: `2019.10.0-V4.0.15-g9dd3ddaf`, built 2024-02-20.
+- Linux kernel version: `4.4.282`, built 2024-04-07.
+- SoC: Anyka `AK3918EV300L`.
+- SPI flash detected as `XM25QH128C`, 16 MiB.
+- RootFS is SquashFS on `/dev/mtdblock5`.
+- Full MTD partition map is present in the kernel command line.
+- Login prompt appears as `GZhongshi login:`.
+- Sensor `sc2336` is detected at 1920x1080.
+- Video encode, audio, PTZ, WiFi, DNS proxy, cloud, and P2P service logs are visible.
+- `ipc79.w390.net` resolves to `120.27.12.196` and cloud/P2P logon succeeds.
+- RTSP-related function names appear: `mvs_rtsp_restart`, `rtsp exit`.
+- PTZ movement logs are visible when PTZ actions occur.
+
+### Results
+
+- P3 read-only UART capture is successful.
+- P3-03 through P3-08 are complete for the initial pass.
+- UART evidence confirms the system, kernel, partition map, media pipeline, WiFi module, cloud/P2P endpoint, and RTSP-related internal function names.
+- `8800/tcp` and `9800/tcp` ownership is not directly printed in the current boot log.
+
+### Problems
+
+- The beginning of the raw log contains garbled data and session restart text, likely from contact instability or restart.
+- The current log does not directly show which process binds `8800/tcp` or `9800/tcp`.
+- USB-TTL TX remains intentionally disconnected, so no interactive commands have been run.
+
+### Next Step
+
+- Continue with P3-09 planning: identify `8800/tcp` and `9800/tcp` ownership using either additional read-only UART captures during App actions, approved interactive UART checks, or later offline firmware/rootfs analysis.
+
+---
+
+## Experiment ID: EXP-0021
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-16 |
+| Operator | Luessiaw / Codex |
+| Stage | P3-09 supporting capture |
+| Goal | Capture UART logs during App preview, HD switch, and PTZ operation |
+| Device State | Camera booted and connected to Windows Mobile Hotspot |
+| Network State | Camera online through hotspot |
+| Tools Used | TF UTL340T USB-TTL / MobaXterm / phone App |
+| Related Files | 04_uart_logs/raw_logs/20260516-2038.log / 04_uart_logs/bootlog_analysis.md |
+
+### Steps
+
+1. Captured a cleaner UART log from power-on.
+2. Waited for network connection success.
+3. Opened preview in the phone App.
+4. Tapped HD / high-definition mode.
+5. Pressed left, right, up, and down PTZ buttons.
+6. Exited preview and powered off.
+7. Analyzed the UART log and appended dynamic-operation findings to `bootlog_analysis.md`.
+
+### Observations
+
+- The log cleanly shows U-Boot, Linux kernel, application startup, WiFi, cloud/P2P login, preview/session events, encoder events, and PTZ actions.
+- App preview or quality switching correlates with `ak_venc_request_idr` and `vchn` / `level_cc` logs.
+- RTSP-related logs appear again: `mvs_rtsp_restart`, followed by `rtsp exit`.
+- PTZ actions are clearly visible and match the requested direction sequence.
+- No direct `8800` or `9800` string appears in this UART log.
+
+### Results
+
+- The second UART log strengthens the conclusion that local encoding exists but standard LAN streaming is not exposed.
+- RTSP-related functionality exists in the firmware/application stack but appears to exit at runtime.
+- PTZ commands can be mapped through UART logs.
+- P3-09 remains partial because port ownership for `8800/tcp` and `9800/tcp` is still not directly printed.
+
+### Problems
+
+- Exact App operation timestamps were not synchronized to packet capture in this run.
+- The UART log includes sensitive identifiers; avoid copying full credential-like strings into summary documents.
+
+### Next Step
+
+- Decide between simultaneous UART + packet capture for PTZ/preview correlation, approved interactive UART read-only commands, or P4 full flash backup and offline rootfs analysis.
