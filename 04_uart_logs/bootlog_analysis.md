@@ -424,3 +424,101 @@ Proceed to P3-09 follow-up planning:
 Most useful near-term option:
 
 - Capture UART log while opening App preview and pressing PTZ directions, then correlate `mvs_rtsp_restart`, `mv_server`, `login handle`, PTZ, and cloud/P2P messages with App behavior.
+
+## Synchronized UART + Packet Capture: 2026-05-19
+
+Related files:
+
+- UART: `04_uart_logs/raw_logs/202605192334_uart_pcap_sync_app_preview_ptz.log`
+- Packet capture: `01_network_capture/pcap_raw/20260519_uart_pcap_sync_app_preview_ptz_camera_192.168.137.177.pcapng`
+
+### Capture Summary
+
+- Packet capture time range: `2026-05-19 23:32:20.775965700` to `2026-05-19 23:34:28.832795500`.
+- Packet count: 379 packets.
+- Main peers observed:
+  - `192.168.137.1`
+  - `120.27.12.196`
+  - `218.91.170.134`
+  - `218.91.199.250`
+  - several DNS-resolved cloud service addresses.
+- No packets involving the phone IP `192.168.137.29` were observed in this filtered camera capture.
+- No `8800/tcp` or `9800/tcp` traffic was observed in this synchronized run.
+
+Sensitive WiFi credential-like lines are present in the raw UART log and are intentionally not copied here.
+
+### Time Alignment
+
+The UART log contains wall-clock timestamps and uptime-style timestamps. The pcap starts at approximately `2026-05-19 23:32:20.776`.
+
+Useful alignment points:
+
+| Event | UART time | Approx pcap relative time | Notes |
+| --- | ---: | ---: | --- |
+| Camera turns to last PTZ position | `23:32:22` / `0:00:25.099` | ~1.2 s | Confirms UART boot timeline overlaps pcap start |
+| P2P login success | `23:32:24` / `0:00:27.997` | ~3-4 s | Matches `ipc79.w390.net` DNS and TCP/UDP setup |
+| Preview/session encoder event | `23:32:35` / `0:00:38.695` | ~14-15 s | Matches later cloud/TLS activity |
+| WiFi reload / disconnect event | `23:33:38` / `0:01:41.268` | ~77 s | Matches user-observed transient disconnect, though stopwatch timing was approximate |
+| WiFi reconnect and IP reacquired | `23:33:44` / `0:01:47.407` | ~83-84 s | Matches cloud IPC re-setup in pcap |
+| P2P login success after reconnect | `23:33:46` / `0:01:49.178` | ~85 s | Confirms cloud session recovery |
+
+### App Operation Correlation
+
+Observed UART events:
+
+- Preview / quality related:
+  - `vchn:1, level_cc:100`
+  - `ak_venc_request_idr [1] success`
+  - `new version: [69][]`
+  - later `vchn:0` and `ak_venc_request_idr [0] success`
+- PTZ related:
+  - left: `ptz turn to left`, then stop near horizon position `256`
+  - right: `ptz turn to right`, then stop near horizon position `226`
+  - up: `ptz turn to up`, then stop near vertical position `36`
+  - down: `ptz turn to down`, then stop near vertical position `2`
+- Disconnect / recovery:
+  - `[NETWORK] need reload wifi driver`
+  - `wlan0 deauthenticating`
+  - WiFi station reconnects
+  - DHCP reacquires `192.168.137.177`
+  - `dns_proxy` restarts
+  - `mvs_rtsp_restart` appears again
+  - P2P login succeeds again
+
+Packet capture correlation:
+
+- Initial boot/network phase again resolves `ipc79.w390.net` to `120.27.12.196`.
+- TCP `1340` plus UDP `1341`, `9001`, `7788`, and `8877` traffic appears during P2P/cloud setup.
+- After the UART WiFi reload event, pcap shows cloud IPC setup again around the same wall-clock period.
+- Later TLS traffic to `devota.av380.net`-related addresses appears during post-reconnect session recovery.
+
+### Interpretation
+
+This synchronized run confirms that the user-observed signal disconnect is not only an App-side symptom. The camera itself logs a WiFi driver reload, deauthentication, station reconnect, DHCP reacquisition, DNS proxy restart, RTSP restart attempt, and P2P re-login.
+
+The event sequence supports this model:
+
+1. Camera detects network health failure or repeated keepalive/ping failure.
+2. Firmware reloads or resets the WiFi station path.
+3. Existing App preview/session is interrupted.
+4. Camera reconnects to the hotspot, obtains the same IP, restarts network-related services, and logs back into the cloud/P2P service.
+5. Preview/session activity resumes after cloud/P2P recovery.
+
+The absence of phone IP traffic and the absence of `8800/tcp` / `9800/tcp` traffic in this run are important. They indicate that App preview and PTZ can operate without a visible direct LAN session between phone and camera in this capture. This weakens the idea that `8800/tcp` or `9800/tcp` is mandatory for App PTZ/video during normal cloud-connected operation.
+
+### Updated Conclusions
+
+- The camera firmware has a live local media pipeline and PTZ control path.
+- The App session is strongly tied to the cloud/P2P path.
+- The intermittent "connecting" state can be caused by camera-side WiFi/P2P recovery, not only by phone-to-cloud issues.
+- `mvs_rtsp_restart` is invoked after network reconnects, but RTSP still exits; this remains evidence of compiled or configured RTSP logic that is not exposed as a usable LAN RTSP service.
+- `8800/tcp` and `9800/tcp` ownership remains unresolved. This synchronized run does not show those ports in use.
+
+### Recommended Next Step
+
+For identifying a local stream, the most efficient next path is no longer repeated App-only packet capture. The current evidence points to either:
+
+1. P4 offline firmware/rootfs analysis after a full SPI flash backup, searching for RTSP, `8800`, `9800`, `mvs_rtsp_restart`, stream configuration, and cloud protocol strings.
+2. Or, with explicit approval and careful read-only constraints, interactive UART checks such as process list, socket list, mounts, and config file names.
+
+Until an interactive shell is intentionally used, keep USB-TTL TX disconnected from the camera RX.

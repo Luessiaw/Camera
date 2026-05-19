@@ -1047,3 +1047,50 @@
 ### Next Step
 
 - Decide between simultaneous UART + packet capture for PTZ/preview correlation, approved interactive UART read-only commands, or P4 full flash backup and offline rootfs analysis.
+
+---
+
+## Experiment ID: EXP-0022
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-19 |
+| Operator | Luessiaw / Codex |
+| Stage | P3 synchronized UART + packet capture |
+| Goal | Correlate UART logs with packet capture during App preview/PTZ and a transient disconnect |
+| Device State | Camera booted and connected to Windows Mobile Hotspot |
+| Network State | Camera online through hotspot; transient disconnect observed during App use |
+| Tools Used | TF UTL340T USB-TTL / MobaXterm / Wireshark or tshark / phone App |
+| Related Files | `04_uart_logs/raw_logs/202605192334_uart_pcap_sync_app_preview_ptz.log` / `01_network_capture/pcap_raw/20260519_uart_pcap_sync_app_preview_ptz_camera_192.168.137.177.pcapng` / `04_uart_logs/bootlog_analysis.md` |
+
+### Steps
+
+1. Captured UART and pcap at the same time.
+2. Operated the phone App preview and PTZ controls.
+3. Observed one transient signal disconnect around the middle/later part of the run.
+4. Compared UART events with pcap timing and cloud endpoint activity.
+
+### Observations
+
+- The raw UART log contains sensitive credential-like lines; summaries intentionally avoid copying them.
+- The packet capture contained 379 packets from `2026-05-19 23:32:20.775965700` to `2026-05-19 23:34:28.832795500`.
+- Main observed peers included the hotspot gateway `192.168.137.1`, cloud/P2P endpoint `120.27.12.196`, and `devota.av380.net`-related TLS peers.
+- No camera-to-phone packets involving `192.168.137.29` were observed in the filtered camera capture.
+- No `8800/tcp` or `9800/tcp` traffic was observed in this synchronized run.
+- UART logs show preview/encoder events, PTZ direction events, and a camera-side WiFi recovery sequence.
+
+### Results
+
+- The transient App disconnect correlates with camera-side network recovery: WiFi driver reload, deauthentication, station reconnect, DHCP reacquisition, DNS proxy restart, RTSP restart attempt, and P2P re-login.
+- The synchronized evidence supports that App preview/PTZ can run through the cloud/P2P path without visible direct LAN traffic between phone and camera.
+- `8800/tcp` and `9800/tcp` remain unresolved; they were not exercised in this run.
+
+### Problems
+
+- Manual operation timestamps are approximate.
+- Packet capture did not expose a local stream protocol or port ownership.
+
+### Next Step
+
+- Prefer P4 offline firmware/rootfs analysis from a full SPI flash backup, or proceed only with explicit approval to interactive read-only UART commands.
+- Keep USB-TTL TX disconnected unless an interactive UART phase is intentionally started.
