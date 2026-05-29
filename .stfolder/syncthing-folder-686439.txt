@@ -1,0 +1,5 @@
+# This directory is a Syncthing folder marker.
+# Do not delete.
+
+folderID: idv9g-resgp
+created: 2026-05-28T23:04:56+08:00
