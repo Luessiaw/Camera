@@ -1094,3 +1094,97 @@
 
 - Prefer P4 offline firmware/rootfs analysis from a full SPI flash backup, or proceed only with explicit approval to interactive read-only UART commands.
 - Keep USB-TTL TX disconnected unless an interactive UART phase is intentionally started.
+
+---
+
+## Experiment ID: EXP-0023
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-22 |
+| Operator | Luessiaw / Codex |
+| Stage | P4-01 |
+| Goal | Confirm SPI Flash candidate, package role, capacity, and supply voltage |
+| Device State | Camera board inspected; powered only for VCC measurement |
+| Network State | Not relevant |
+| Tools Used | Visual inspection / multimeter continuity mode / multimeter DC voltage mode |
+| Related Files | `0_tasks.csv` |
+
+### Steps
+
+1. Identified four 8-pin chips on the camera board by top marking.
+2. Selected `25QH128DHIQ` as the likely SPI NOR Flash candidate.
+3. Verified pin 4 continuity to board GND with power disconnected.
+4. Verified pin 8 is not GND.
+5. Powered the board and measured pin 8 against GND.
+
+### Observations
+
+- Candidate Flash marking: `25QH128DHIQ`.
+- The marking indicates a 25-series SPI NOR Flash, likely 128 Mbit / 16 MiB.
+- This matches the UART boot log's 16 MiB SPI Flash finding.
+- Pin 4 is GND.
+- Pin 8 is VCC.
+- Measured VCC is approximately `3.27 V`.
+
+### Results
+
+- P4-01 is complete.
+- The firmware storage chip is the `25QH128DHIQ` SPI NOR Flash candidate.
+- Expected programming voltage is 3.3 V, not 1.8 V.
+- The next task is P4-02: prepare a 3.3 V-capable SPI programmer setup and SOIC8/SOP8 clip, still with a read-first/no-write rule.
+
+### Problems
+
+- None observed in this step.
+
+### Next Step
+
+- Prepare P4-02 equipment: CH341A or equivalent programmer, verified 3.3 V output, SOIC8/SOP8 clip, stable board positioning, and a plan for read-only connection.
+
+---
+
+## Experiment ID: EXP-0024
+
+| Item | Value |
+| --- | --- |
+| Date | 2026-05-29 |
+| Operator | Luessiaw / Codex |
+| Stage | P4-02 |
+| Goal | Verify CH341A programmer mode, voltage rails, and SOP clip orientation before connecting to camera Flash |
+| Device State | Camera not connected to programmer during voltage checks |
+| Network State | Not relevant |
+| Tools Used | CH341APro / CH341B programmer / SOP test clip / multimeter |
+| Related Files | `05_firmware_backup/chip_info/CH341A板文字说明.md` / `0_tasks.csv` |
+
+### Steps
+
+1. Inspected CH341A programmer board markings.
+2. Confirmed programmer mode jumper is at `1-2`, marked as programming mode.
+3. Measured programmer `3.3V` to `GND`.
+4. Measured programmer `5V` to `GND`.
+5. Confirmed SOP clip red wire is connected to the `25xx` side and conducts to `CS`.
+
+### Observations
+
+- Programmer board: black CH341APro-style board with CH341B chip.
+- Jumper position: `1-2`, programming mode.
+- `3.3V-GND`: `3.28 V`.
+- `5V-GND`: `4.87 V`.
+- SOP clip red wire is on the `25xx` side.
+- Red wire continuity to `CS` is confirmed.
+
+### Results
+
+- P4-02 is in progress and ready for the next safety check.
+- The measured 3.3 V rail is suitable for the `25QH128DHIQ` Flash supply.
+- The next action should be an unpowered clip-on continuity check on the camera board.
+
+### Problems
+
+- Black CH341A-style boards may still have implementation-specific signal-level risks, so the first camera-side attempt must remain read-only and short.
+- The camera must not be powered from its normal power input while the CH341A is attached.
+
+### Next Step
+
+- With the camera fully disconnected from power, clip onto the Flash and verify GND, VCC, pin direction, and absence of adjacent-pin shorts before plugging the CH341A into USB.
